@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>여행 가계부</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f2ee;
+      --ink: #1a1814;
+      --muted: #8c8680;
+      --accent: #c8602a;
+      --line: #d9d4ce;
+      --card: #ffffff;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Noto Serif KR', serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 1.5rem;
+    }
+
+    /* ── header ── */
+    header {
+      width: 100%;
+      max-width: 560px;
+      padding: 3.5rem 0 2rem;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+    }
+    .label {
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: .12em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -.02em;
+    }
+    .tagline {
+      margin-top: .25rem;
+      font-size: .95rem;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    /* ── version badge ── */
+    .version-row {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-top: 1rem;
+    }
+    .badge {
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem;
+      padding: .25em .6em;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      color: var(--muted);
+      background: var(--bg);
+    }
+    .badge.new {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ── main ── */
+    main {
+      width: 100%;
+      max-width: 560px;
+      padding: 2.5rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    /* download card */
+    .dl-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .dl-card .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .dl-card .file-info {
+      display: flex;
+      flex-direction: column;
+      gap: .2rem;
+    }
+    .dl-card .file-name {
+      font-family: 'DM Mono', monospace;
+      font-size: .85rem;
+      color: var(--ink);
+    }
+    .dl-card .file-meta {
+      font-size: .78rem;
+      color: var(--muted);
+    }
+    .btn-dl {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: var(--ink);
+      color: #fff;
+      font-family: 'DM Mono', monospace;
+      font-size: .78rem;
+      letter-spacing: .05em;
+      padding: .65em 1.2em;
+      border-radius: 4px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+    }
+    .btn-dl:hover { background: #333; transform: translateY(-1px); }
+    .btn-dl:active { transform: translateY(0); }
+    .btn-dl svg { flex-shrink: 0; }
+
+    .divider { height: 1px; background: var(--line); }
+
+    .install-note {
+      font-size: .8rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .install-note strong { color: var(--ink); font-weight: 600; }
+
+    /* changelog */
+    .section-title {
+      font-size: .7rem;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: .1em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .changelog {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .cl-item {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: .5rem 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .cl-item:first-child { border-top: 1px solid var(--line); }
+    .cl-ver {
+      font-family: 'DM Mono', monospace;
+      font-size: .78rem;
+      color: var(--ink);
+      padding-top: .05rem;
+    }
+    .cl-date {
+      font-family: 'DM Mono', monospace;
+      font-size: .68rem;
+      color: var(--muted);
+      display: block;
+      margin-top: .25rem;
+    }
+    .cl-notes {
+      font-size: .85rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+    .cl-notes li { margin-left: 1.1em; }
+
+    /* footer */
+    footer {
+      width: 100%;
+      max-width: 560px;
+      padding: 1.5rem 0 3rem;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    footer span {
+      font-family: 'DM Mono', monospace;
+      font-size: .68rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="label">Android App</span>
+  <h1>여행 가계부</h1>
+  <p class="tagline">여행 중 지출을 간편하게 기록하고 정산하세요.</p>
+  <div class="version-row">
+    <span class="badge new">v1.0.0</span>
+    <span class="badge">Android 7.0+</span>
+    <span class="badge">APK</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- Download -->
+  <div class="dl-card">
+    <div class="row">
+      <div class="file-info">
+        <span class="file-name">travel-budget-v1.0.0.apk</span>
+        <span class="file-meta">Google Drive · Android APK</span>
+      </div>
+      <!-- 🔗 Google Drive 링크를 여기 href에 넣으세요 -->
+      <a class="btn-dl" href="YOUR_GOOGLE_DRIVE_LINK_HERE" target="_blank">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        다운로드
+      </a>
+    </div>
+
+    <div class="divider"></div>
+
+    <p class="install-note">
+      <strong>설치 방법</strong><br>
+      APK 파일 다운로드 후 &nbsp;
+      <strong>설정 → 보안 → 출처를 알 수 없는 앱 허용</strong>을 켜고 파일을 실행하세요.
+    </p>
+  </div>
+
+  <!-- Changelog -->
+  <div>
+    <p class="section-title">업데이트 내역</p>
+    <div class="changelog">
+
+      <div class="cl-item">
+        <div>
+          <span class="cl-ver">v1.0.0</span>
+          <span class="cl-date">2026.03.11</span>
+        </div>
+        <ul class="cl-notes">
+          <li>최초 출시</li>
+        </ul>
+      </div>
+
+      <!-- 새 버전 추가 시 아래 블록을 복사해서 위에 붙여넣으세요
+      <div class="cl-item">
+        <div>
+          <span class="cl-ver">v1.1.0</span>
+          <span class="cl-date">YYYY.MM.DD</span>
+        </div>
+        <ul class="cl-notes">
+          <li>변경사항</li>
+        </ul>
+      </div>
+      -->
+
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <span>여행 가계부 · Android</span>
+  <span>made with ♥</span>
+</footer>
+
+</body>
+</html>
